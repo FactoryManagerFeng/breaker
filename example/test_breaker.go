@@ -30,7 +30,7 @@ func init() {
 }
 
 func main() {
-	var url = "https://api-vip.qschou.com"
+	var url = "https://www.baidu.com"
 	var wg sync.WaitGroup
 	for i := 0; i < 30; i++ {
 		wg.Add(1)
