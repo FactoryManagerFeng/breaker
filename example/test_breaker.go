@@ -15,6 +15,8 @@ var b *breaker.Breaker
 func init() {
 	var settings breaker.Settings
 	settings.Name = "test_breaker"
+	settings.MaxRequest = 5
+	settings.Timeout = 5 * time.Second
 	settings.ReadyToTrip = func(counts breaker.Counts) bool {
 		if counts.RequestsNum >= 10 {
 			return true
@@ -30,13 +32,13 @@ func init() {
 func main() {
 	var url = "https://api-vip.qschou.com"
 	var wg sync.WaitGroup
-	for i := 0; i < 12; i++ {
+	for i := 0; i < 30; i++ {
 		wg.Add(1)
 		go func(i int) {
 			get(url, i)
 			wg.Done()
 		}(i)
-		time.Sleep(200 * time.Millisecond)
+		time.Sleep(1 * time.Second)
 	}
 	wg.Wait()
 }
@@ -52,7 +54,9 @@ func get(url string, i int) {
 		if err != nil {
 			return nil, err
 		}
-		err = errors.New("test")
+		if i < 15 {
+			err = errors.New("test")
+		}
 		return body, err
 	})
 	fmt.Println(body, err, i)

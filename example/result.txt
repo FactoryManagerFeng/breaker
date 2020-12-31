@@ -1,0 +1,33 @@
+[111 107] test 0
+[111 107] test 1
+[111 107] test 2
+[111 107] test 3
+[111 107] test 4
+[111 107] test 5
+[111 107] test 6
+[111 107] test 7
+[111 107] test 8
+test_breaker closed open
+[111 107] test 9
+<nil> breaker is open 10
+<nil> breaker is open 11
+<nil> breaker is open 12
+<nil> breaker is open 13
+<nil> breaker is open 14
+test_breaker open half-open
+[111 107] <nil> 15
+[111 107] <nil> 16
+[111 107] <nil> 17
+[111 107] <nil> 18
+test_breaker half-open closed
+[111 107] <nil> 19
+[111 107] <nil> 20
+[111 107] <nil> 21
+[111 107] <nil> 22
+[111 107] <nil> 23
+[111 107] <nil> 24
+[111 107] <nil> 25
+[111 107] <nil> 26
+[111 107] <nil> 27
+[111 107] <nil> 28
+[111 107] <nil> 29
