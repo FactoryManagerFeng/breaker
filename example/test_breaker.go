@@ -2,19 +2,24 @@ package main
 
 import (
 	"code.piupiu.com/book/go_book_common/breaker"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"sync"
+	"time"
 )
 
 var b *breaker.Breaker
 
 func init() {
 	var settings breaker.Settings
-	settings.Name = "test breaker"
+	settings.Name = "test_breaker"
 	settings.ReadyToTrip = func(counts breaker.Counts) bool {
-		ratio := float64(counts.FailNum) / float64(counts.RequestsNum)
-		return counts.RequestsNum >= 3 && ratio >= 0.5
+		if counts.RequestsNum >= 10 {
+			return true
+		}
+		return false
 	}
 	settings.OnStateChange = func(name string, from, to breaker.State) {
 		fmt.Println(name, from, to)
@@ -23,7 +28,20 @@ func init() {
 }
 
 func main() {
-	var url = "http://www.baidu.com"
+	var url = "https://api-vip.qschou.com"
+	var wg sync.WaitGroup
+	for i := 0; i < 12; i++ {
+		wg.Add(1)
+		go func(i int) {
+			get(url, i)
+			wg.Done()
+		}(i)
+		time.Sleep(200 * time.Millisecond)
+	}
+	wg.Wait()
+}
+
+func get(url string, i int) {
 	body, err := b.Execute(func() (interface{}, error) {
 		resp, err := http.Get(url)
 		if err != nil {
@@ -34,13 +52,8 @@ func main() {
 		if err != nil {
 			return nil, err
 		}
-
-		return body, nil
+		err = errors.New("test")
+		return body, err
 	})
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		result := body.([]byte)
-		fmt.Println(string(result))
-	}
+	fmt.Println(body, err, i)
 }
